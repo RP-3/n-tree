@@ -95,6 +95,21 @@ Tree.prototype.query = function(maxima, minima, result){
   return result;
 };
 
+Tree.prototype.each = function(maxima, minima, cb){
+  for(var i=0; i<this.children.length; i++){
+    if(this.children[i] && this.children[i].isWithin(maxima, minima)){
+      if(!this.children[i].values){
+        //recurse down for more children
+        this.children[i].each(maxima, minima, cb);
+      }else{
+        //it's a leaf. Fetch all of it's children
+        for(var j=0; j<this.children[i].values.length; j++){
+          cb(this.children[i].values[j]);
+        }
+      }
+    }
+  }
+};
 
 Leaf.prototype.getCentreAndRegion =
 Tree.prototype.getCentreAndRegion = function(vector){

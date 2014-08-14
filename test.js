@@ -30,3 +30,7 @@ n.insert([2, 7], 'value2');
 n.insert([1.5, 6.5], 'value3');
 
 console.log(n.query([10,10],[0,0]));
+
+n.each([10,10],[0,0], function(item){
+  console.log(item.coords, item.value);
+});
