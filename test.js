@@ -28,3 +28,5 @@ n = new Tree([10, 10], [0, 0], null);
 n.insert([1, 6], 'value1');
 n.insert([2, 7], 'value2');
 n.insert([1.5, 6.5], 'value3');
+
+console.log(n.query([10,10],[0,0]));

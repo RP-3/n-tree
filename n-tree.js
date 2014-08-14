@@ -1,4 +1,4 @@
-/*helper functions*/
+//declare fomr helper functions for matrix operations
 var divide = function(array, divisor){
   return array.map(function(element){
     return element / divisor;
@@ -34,6 +34,13 @@ var Tree = function(maxima, minima, parent, centre){
   this.children = new Array(1 << maxima.length);
 };
 
+/*Leaf class. Has value, assigned to specified coordinates*/
+var Leaf = function(parent, relativePosition){
+  this.parent = parent;
+  this.values = [];
+  this.getCentreAndRegion(relativePosition);
+};
+
 Tree.prototype.getRelativeVector = function(coords){
   var result = 0;
   for(var i=0, bit=1; i<coords.length; i++){
@@ -60,12 +67,34 @@ Tree.prototype.insert = function(coords, value) {
   }
 };
 
-/*Leaf class. Has value, assigned to specified coordinates*/
-var Leaf = function(parent, relativePosition){
-  this.parent = parent;
-  this.values = [];
-  this.getCentreAndRegion(relativePosition);
+Tree.prototype.isWithin = Leaf.prototype.isWithin = function(maxima, minima) {
+  var result = true;
+  for(var i=0; i<minima.length; i++){
+    if(this.minima[i] > maxima[i] || this.maxima[i] < minima[i]){
+      return false;
+    }
+  }
+  return true;
 };
+
+Tree.prototype.query = function(maxima, minima, result){
+  result = result || [];
+  for(var i=0; i<this.children.length; i++){
+    if(this.children[i] && this.children[i].isWithin(maxima, minima)){
+      if(!this.children[i].values){
+        //recurse down for more children
+        this.children[i].query(maxima, minima, result);
+      }else{
+        //it's a leaf. Fetch all of it's children
+        for(var j=0; j<this.children[i].values.length; j++){
+          result.push(this.children[i].values[j]);
+        }
+      }
+    }
+  }
+  return result;
+};
+
 
 Leaf.prototype.getCentreAndRegion =
 Tree.prototype.getCentreAndRegion = function(vector){
@@ -107,7 +136,7 @@ Leaf.prototype.insert = function(coords, value) {
 };
 
 Leaf.prototype.subdivide = function(coords, value) {
-  var subdivision = new Tree(this.maxima, this.minima, this, this.centre);
+  var subdivision = new Tree(this.maxima, this.minima, this.parent, this.centre);
   for(var i=0; i<this.values.length; i++){
     subdivision.insert(this.values[i].coords, this.values[i].value);
   }
@@ -117,7 +146,7 @@ Leaf.prototype.subdivide = function(coords, value) {
 
 //dimensions = [50, 100, 150]
 var nMap = function(maxima, minima, limit){
-  var tree = new Tree(maxima, minima, null);
+  this.tree = new Tree(maxima, minima, null);
   Leaf.prototype.limit = limit;
 };
 
