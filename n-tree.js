@@ -98,14 +98,30 @@ Tree.prototype.query = function(maxima, minima, result){
 Tree.prototype.each = function(maxima, minima, cb){
   for(var i=0; i<this.children.length; i++){
     if(this.children[i] && this.children[i].isWithin(maxima, minima)){
+      //if this is a tree
       if(!this.children[i].values){
         //recurse down for more children
         this.children[i].each(maxima, minima, cb);
       }else{
         //it's a leaf. Fetch all of it's children
         for(var j=0; j<this.children[i].values.length; j++){
-          console.log(this.children[i].values[j]);
+          cb(this.children[i].values[j]);
         }
+      }
+    }
+  }
+};
+
+Tree.prototype.eachLeaf = function(maxima, minima, cb){
+  for(var i=0; i<this.children.length; i++){
+    if(this.children[i] && this.children[i].isWithin(maxima, minima)){
+      //if this is a tree
+      if(!this.children[i].values){
+        //recurse down for more children
+        this.children[i].eachLeaf(maxima, minima, cb);
+      }else{
+        //it's a leaf. Fetch all of it's children
+        cb(this.children[i]);
       }
     }
   }
@@ -160,10 +176,10 @@ Leaf.prototype.subdivide = function(coords, value) {
   self.parent.children[self.vector] = subdivision;
 };
 
-//dimensions = [50, 100, 150]
-var nMap = function(maxima, minima, limit){
-  this.tree = new Tree(maxima, minima, null);
+module.exports = function(maxima, minima, limit){
+  var tree = new Tree(maxima, minima, null);
   Leaf.prototype.limit = limit;
+  return tree;
 };
 
 
