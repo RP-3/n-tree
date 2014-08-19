@@ -10,12 +10,31 @@ var randomCoords = function(maxima, minima){
 };
 
 describe('getRelativeVector', function() {
-  n = new Tree([10, 10], [0, 0], 1);
   it('should return the correct relative direction from a point', function() {
+    n = new Tree([10, 10], [0, 0], 1);
     n.getRelativeVector([1, 1]).should.equal(0);
     n.getRelativeVector([6, 1]).should.equal(1);
     n.getRelativeVector([1, 6]).should.equal(2);
     n.getRelativeVector([6, 6]).should.equal(3);
+  });
+
+  it('should work with one-dimensional coordinate sets', function() {
+    n = new Tree([10], [0], 1);
+    n.getRelativeVector([1]).should.equal(0);
+    n.getRelativeVector([6]).should.equal(1);
+  });
+
+  it('should work with n-dimensional coordinate sets', function() {
+    n = new Tree([10, 10, 10, 10], [-10 ,-10, -10, -10], 1);
+    n.getRelativeVector([-1, -1, -1, -1]).should.equal(0);
+    n.getRelativeVector([1, -1, -1, -1]).should.equal(1);
+    n.getRelativeVector([-1, 1, -1, -1]).should.equal(2);
+    n.getRelativeVector([-1, -1, 1, -1]).should.equal(4);
+    n.getRelativeVector([-1, -1, -1, 1]).should.equal(8);
+    n.getRelativeVector([1, 1, -1, -1]).should.equal(3);
+    n.getRelativeVector([-1, 1, 1, -1]).should.equal(6);
+    n.getRelativeVector([1, -1, -1, 1]).should.equal(9);
+    n.getRelativeVector([10, 10, 10, 10]).should.equal(15);
   });
 });
 
