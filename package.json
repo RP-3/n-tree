@@ -1,0 +1,29 @@
+{
+  "name": "n-tree",
+  "version": "0.0.0",
+  "description": "N-dimensional quadtree with functions for querying, iteration and collision detection.",
+  "main": "n-tree.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RP-3/n-tree.git"
+  },
+  "keywords": [
+    "quadtree",
+    "n-tree",
+    "collision",
+    "detection",
+    "dimension",
+    "tree",
+    "quad",
+    "binary"
+  ],
+  "author": "RP-3",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RP-3/n-tree/issues"
+  },
+  "homepage": "https://github.com/RP-3/n-tree"
+}

@@ -104,7 +104,7 @@ Tree.prototype.each = function(maxima, minima, cb){
       }else{
         //it's a leaf. Fetch all of it's children
         for(var j=0; j<this.children[i].values.length; j++){
-          cb(this.children[i].values[j]);
+          console.log(this.children[i].values[j]);
         }
       }
     }
@@ -155,8 +155,9 @@ Leaf.prototype.subdivide = function(coords, value) {
   for(var i=0; i<this.values.length; i++){
     subdivision.insert(this.values[i].coords, this.values[i].value);
   }
+  var self = this;
   subdivision.insert(coords, value);
-  this.parent.children[this.vector] = subdivision;
+  self.parent.children[self.vector] = subdivision;
 };
 
 //dimensions = [50, 100, 150]
