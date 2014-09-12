@@ -15,6 +15,14 @@ var randomCoords = function(n, tree){
   }
 };
 
+var getDistance = function(a, b){
+  var sumSq = 0;
+  for(var i=0; i<a.length; i++){
+    sumSq += Math.pow(a[i] - b[i], 2);
+  }
+  return Math.sqrt(sumSq);
+};
+
 describe('getRelativeVector', function() {
   it('should return the correct relative direction from a point', function() {
     var n = new Tree([10, 10], [0, 0], 1);
@@ -91,7 +99,7 @@ describe('value iteration function', function(){
 
   });
 
-  it('should pass some reasonable stress tests', function(){
+  it('should pass some reasonable (100,000-insertion) stress tests', function(){
     var n = new Tree([100, 100], [0, 0], 10);
 
     var start = new Date();
@@ -115,16 +123,84 @@ describe('value iteration function', function(){
   });
 });
 
-// n = new Tree([1, 1], [0, 0], 2);
+describe('leaf iteration function', function(){
 
-// var coord1, coord2;
-// for(var k=0; k<100; k++){
-//   coord1 = Math.random();
-//   coord2 = Math.random();
-//   n.insert([coord1, coord2], (coord1 + coord2).toString());
-// }
+  it('should find the correct number of leaves', function(){
+    var n = new Tree([10, 10], [0, 0], 2);
+    
+    n.insert([1, 1], '[1, 1]');
+    n.insert([1, 7], '[1, 7]');
+    n.insert([1, 8], '[1, 8]');
+    n.insert([1, 9], '[1, 9]');
 
-// n.each([0.8, 0.6], [0.2, 0.5], function(item){
-//   console.log(item.coords, item.value);
-// });
+    var leafCounter = 0;
+    n.eachLeaf([10, 10], [0, 0], function(leaf){
+      leafCounter++;
+    });
+
+    leafCounter.should.equal(3);
+
+  });
+
+  it('should rearrange the tree accurately', function(){
+
+  });
+
+});
+
+describe('leaf iteration function performance', function(){
+  
+  var n = new Tree([10, 10, 10, 10], [0, 0, 0, 0], 4);
+  randomCoords(10000, n);
+  var leafCounter = 0;
+
+  it('should take a reasonable amount of time to re-build the tree', function(){
+    var start = new Date();
+
+    var m = new Tree([10, 10, 10, 10], [0, 0, 0, 0], 4);
+    n.each([10, 10, 10, 10], [0, 0, 0, 0], function(item){
+      m.insert(item.coords, item.value);
+      leafCounter++;
+    });
+
+    var time = new Date() - start;
+
+    leafCounter.should.equal(10000);
+    time.should.be.lessThan(40);
+
+  });
+
+  it('should perform collision detection in a reasonable amount of time', function(){
+    
+    var start = new Date();
+
+    n.eachLeaf([10, 10, 10, 10], [0, 0, 0, 0], function(leaf){
+      var checked = {};
+
+      for(var i=0; i<leaf.values.length; i++){
+        for(var j=1; j<leaf.values.length; j++){
+
+          if(i !== j){
+            var key = i.toString(10) + j.toString(10);
+            var keyInverse = j.toString(10); + i.toString(10);
+
+            if(!Object.hasOwnProperty(key)){
+              checked[key] = 1;
+              checked[keyInverse] = 1;
+              var distance = getDistance(leaf.values[i].coords, leaf.values[j].coords);
+            }
+
+          }
+
+        }
+      }
+    });
+
+    var time = new Date() - start;
+    time.should.be.lessThan(20);
+
+  });
+
+});
+
 
